@@ -1,0 +1,36 @@
+#import
+from launch import LaunchDescription
+#import node
+from launch_ros.actions import Node
+
+#launch
+def generate_launch_description():
+    ld = LaunchDescription()
+#create launch node
+    number_publisher_node = Node(
+        package="my_py_pkg",
+        executable="number_publisher",
+        name="my_number_publisher",
+        remappings=[
+            ("number","my_number")
+        ],
+        parameters=[
+            {"number_to_publish": 4},
+            {"publish_frequency": 5.0}
+        ]
+    )
+
+    number_counter_node = Node(
+        package="my_cpp_pkg",
+        executable="number_counter",
+        name="my_number_counter",
+        remappings=[
+            ("number","my_number"),
+            ("number_count","my_number_count")
+        ]
+    )
+#add action
+    ld.add_action(number_publisher_node)
+    ld.add_action(number_counter_node)
+
+    return ld
